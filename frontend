@@ -1,0 +1,81 @@
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+export default function ATMApp() {
+  const [screen, setScreen] = useState("home");
+  const [balance, setBalance] = useState(1000);
+  const [amount, setAmount] = useState("");
+
+  const withdraw = () => {
+    const num = parseInt(amount);
+    if (!isNaN(num) && num > 0 && num <= balance) {
+      setBalance(balance - num);
+      alert(`Withdrawn ₹${num}`);
+    } else {
+      alert("Invalid amount");
+    }
+    setAmount("");
+    setScreen("home");
+  };
+
+  const deposit = () => {
+    const num = parseInt(amount);
+    if (!isNaN(num) && num > 0) {
+      setBalance(balance + num);
+      alert(`Deposited ₹${num}`);
+    } else {
+      alert("Invalid amount");
+    }
+    setAmount("");
+    setScreen("home");
+  };
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <Card className="w-[350px] shadow-lg rounded-2xl p-6">
+        <CardContent>
+          {screen === "home" && (
+            <div className="space-y-4 text-center">
+              <h1 className="text-xl font-bold">ATM Machine</h1>
+              <p className="text-lg">Balance: ₹{balance}</p>
+              <Button className="w-full" onClick={() => setScreen("withdraw")}>
+                Withdraw
+              </Button>
+              <Button className="w-full" onClick={() => setScreen("deposit")}>
+                Deposit
+              </Button>
+              <Button className="w-full" onClick={() => alert("Take your card!")}>
+                Exit
+              </Button>
+            </div>
+          )}
+
+          {(screen === "withdraw" || screen === "deposit") && (
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold">
+                {screen === "withdraw" ? "Withdraw Amount" : "Deposit Amount"}
+              </h2>
+              <Input
+                type="number"
+                placeholder="Enter amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
+              <Button
+                className="w-full"
+                onClick={screen === "withdraw" ? withdraw : deposit}
+              >
+                Confirm
+              </Button>
+              <Button className="w-full" variant="outline" onClick={() => setScreen("home")}>
+                Back
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
